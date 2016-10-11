@@ -1,0 +1,3 @@
+[submodule "src/wysiwyg-editor"]
+	path = src/wysiwyg-editor
+	url = git@github.com:froala/wysiwyg-editor.git

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>FroalaEditor</id>
+        <version>2.3.4</version>
+        <authors>Stefan Neculai</authors>
+        <owners>Froala Labs</owners>
+        <licenseUrl>https://www.froala.com/wysiwyg-editor/terms</licenseUrl>
+        <projectUrl>https://www.froala.com/wysiwyg-editor/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Nuget package for Froala WYSIWYG Editor.</description>
+        <summary>Froala WYSIWYG HTML Editor - https://froala.com/wysiwyg-editor</summary>
+        <tags>Froala WYSIWYG HTML Editor Rich Text Editor</tags>
+	<dependencies>
+		<dependency id="jQuery" version="1.11.0"/>
+		<dependency id="FontAwesome" version="4.6.3"/>
+	</dependencies>
+    </metadata>
+    <files>
+    	<file src="src\wysiwyg-editor\**\*.*" target="Content\Scripts\froala-editor" exclude="src\wysiwyg-editor\.gitignore;src\wysiwyg-editor\License.txt;src\wysiwyg-editor\README.md;src\wysiwyg-editor\bower.json;src\wysiwyg-editor\composer.json;src\wysiwyg-editor\package.json;src\wysiwyg-editor\.github\**\.*;src\wysiwyg-editor\html\**\.*"></file>
+    </files>
+</package>
