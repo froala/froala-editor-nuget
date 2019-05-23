@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>FroalaEditor</id>
-        <version>3.0.0-beta.1</version>
+        <version>3.0.0-beta.2</version>
         <authors>Stefan Neculai</authors>
         <owners>Froala Labs</owners>
         <licenseUrl>https://www.froala.com/wysiwyg-editor/terms</licenseUrl>
@@ -12,8 +12,6 @@
         <summary>Froala WYSIWYG HTML Editor - https://froala.com/wysiwyg-editor</summary>
         <tags>Froala WYSIWYG HTML Editor Rich Text Editor</tags>
 	<dependencies>
-		<dependency id="jQuery" version="1.11.0"/>
-		<dependency id="FontAwesome" version="4.6.3"/>
 	</dependencies>
     </metadata>
     <files>
