@@ -2,8 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>FroalaEditor</id>
-        <version>3.1.0</version>
-        <authors>Stefan Neculai</authors>
+        <version>3.2.0</version>
+        <authors>Kapil Garg</authors>
         <owners>Froala Labs</owners>
         <licenseUrl>https://www.froala.com/wysiwyg-editor/terms</licenseUrl>
         <projectUrl>https://www.froala.com/wysiwyg-editor/</projectUrl>
