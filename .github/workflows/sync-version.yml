@@ -1,0 +1,106 @@
+name: Sync Version – nuget SDK
+
+on:
+ repository_dispatch:
+   types: [version_update]
+   
+permissions:
+  contents: write
+ 
+jobs:
+  release:
+    runs-on: ubuntu-latest
+   
+    steps:
+     - name: Checkout repository
+       uses: actions/checkout@v4
+       with:
+         token: ${{ secrets.PAT }}
+         
+     - name: Load version
+       run: |
+         VERSION="${{ github.event.client_payload.version }}"
+         
+         if [ -z "$VERSION" ]; then
+           echo "Version is missing"
+           exit 1
+         fi
+         
+         if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+           echo "Invalid version format: $VERSION"
+           exit 1
+         fi
+         
+         echo "VERSION=$VERSION" >> $GITHUB_ENV
+         echo "Using version $VERSION"
+         
+     - name: Compare current version (nuspec)
+       run: |
+        if [ ! -f "FroalaEditor.nuspec" ]; then
+          echo "FroalaEditor.nuspec not found"
+          exit 1
+        fi
+        CURRENT_VERSION=$(grep -oP '(?<=<version>)[^<]+' FroalaEditor.nuspec)
+        if [ -z "$CURRENT_VERSION" ]; then
+          echo "Could not read version from FroalaEditor.nuspec"
+          exit 1
+        fi
+        echo "Current version: $CURRENT_VERSION"
+        echo "Incoming version: $VERSION"
+        if [ "$CURRENT_VERSION" = "$VERSION" ]; then
+          echo "Version already up to date. Skipping release."
+          echo "SKIP_RELEASE=true" >> $GITHUB_ENV
+          exit 0
+        fi
+        echo "New version detected. Continuing."
+        echo "SKIP_RELEASE=false" >> $GITHUB_ENV
+         
+     - name: Prepare release branch
+       run: |
+         BRANCH="release-v${VERSION}"
+         echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+         
+         git fetch origin
+         
+         if git ls-remote --heads origin "$BRANCH" | grep -q "$BRANCH"; then
+           git checkout "$BRANCH"
+           git pull origin "$BRANCH"
+         else
+           git checkout -b "$BRANCH"
+         fi
+         
+     - name: Update FroalaEditor.nuspec
+       run: |
+            sed -i -E "0,/<version>.*<\/version>/s//<version>${VERSION}<\/version>/" FroalaEditor.nuspec
+
+         
+     - name: Commit changes
+       run: |
+         git config user.name "froala-travis-bot"
+         git config user.email "froala_git_travis_bot@idera.com"
+         git add FroalaEditor.nuspec
+         git commit -m "update FroalaEditor.nuspec to v${VERSION}" || echo "Nothing to commit"
+         git push origin "$BRANCH"
+         
+     - name: Create Pull Request
+       env:
+          GH_TOKEN: ${{ secrets.PAT }}
+          RELEASE_NOTES: ${{ github.event.client_payload.release_notes }}
+       run: |
+          git fetch origin master
+
+          if git diff --quiet origin/master..."$BRANCH"; then
+            echo "No commits between $BRANCH and master. Skipping PR creation."
+            exit 0
+          fi
+
+          PR_BODY=$(printf \
+            "release: yes\n\n## Release Notes (from primary repo)\n\n%s\n" \
+            "$RELEASE_NOTES")
+
+          gh pr create \
+            --base master \
+            --head "$BRANCH" \
+            --title "Release v${VERSION}" \
+            --body "$PR_BODY" \
+            || echo "Pull request already exists"
