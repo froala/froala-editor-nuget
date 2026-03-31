@@ -16,10 +16,13 @@ jobs:
        with:
          token: ${{ secrets.PAT }}
          submodules: false
+
+     - name: Override submodule URL to HTTPS
+       run: |
+        git config submodule.src/wysiwyg-editor.url https://github.com/froala/wysiwyg-editor.git
          
      - name: Initialize and update submodule
        run: |
-         git submodule sync
          git submodule update --init --recursive
          
      - name: Load version
